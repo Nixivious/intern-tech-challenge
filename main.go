@@ -33,8 +33,8 @@ func LatestVersions(releases []*semver.Version, minVersion *semver.Version) []*s
 
 			// We take advantage of the sorted releases array, the current patch must be greater than prev
 			if major < release.Major || minor < release.Minor { // if either major or minor increments, we observe an increment in version, and so the previous patch observed is the greatest of the previous version
-				major, minor = release.Major, release.Minor
-				versionSlice = append(versionSlice, prev)
+				major, minor = release.Major, release.Minor // update variables to current(latest) major/minor version
+				versionSlice = append(versionSlice, prev) // Record latest patch for the previous version
 			}
 
 			prev = release
@@ -42,7 +42,7 @@ func LatestVersions(releases []*semver.Version, minVersion *semver.Version) []*s
 	}
 
 	if prev != nil {
-		versionSlice = append(versionSlice, prev)
+		versionSlice = append(versionSlice, prev) // Record latest patch for last element
 	}
 
 	// Sort release array in reverse order
