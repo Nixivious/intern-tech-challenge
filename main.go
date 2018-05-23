@@ -23,8 +23,8 @@ func LatestVersions(releases []*semver.Version, minVersion *semver.Version) []*s
 	var major, minor int64 // Keeps track of the latest version of major or minor
 	var prev *semver.Version
 	for _, release := range releases {
-		// Consider versions above specified minVersion.
-		if !release.LessThan(*minVersion) {
+		// Consider versions above specified minVersion. We ignore any PreReleases, they are not a full patch.
+		if !release.LessThan(*minVersion) && len(release.PreRelease) == 0 {
 			// Initialize here instead since first row of releases may be larger than minVersion
 			if prev == nil {
 				major, minor = release.Major, release.Minor
@@ -59,8 +59,11 @@ func main() {
 
 	// Check command line arguments
 	args := os.Args
-	if len(args) != 2 {
+	if len(args) < 2 {
 		fmt.Println("Input file required, please specify path! (expected: arg1:file-path)")
+		return
+	} else if len(args) > 2 {
+		fmt.Println("Too many arguements provided, please check input! (expected: arg1:file-path)")
 		return
 	}
 
